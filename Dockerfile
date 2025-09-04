@@ -1,4 +1,4 @@
-FROM n8nio/n8n
+FROM n8nio/n8n:1.62.1
 
 ENV PORT=5678
 EXPOSE $PORT
