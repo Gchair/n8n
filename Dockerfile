@@ -5,3 +5,5 @@ FROM n8nio/n8n
 
 # Expose the port
 EXPOSE 5678
+
+CMD ["sh", "-c", "n8n start --port $PORT"]
