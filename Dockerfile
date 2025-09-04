@@ -5,4 +5,4 @@ EXPOSE $PORT
 
 ENV N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
 
-CMD ["n8n", "start", "--port", "5678"]
+
