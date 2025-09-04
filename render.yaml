@@ -12,7 +12,7 @@ services:
       - key: DB_POSTGRESDB_HOST
         value: aws-1-ap-south-1.pooler.supabase.com
       - key: DB_POSTGRESDB_PASSWORD
-        value: Knsulting@11
+        value: Knsulting%4011
       - key: DB_POSTGRESDB_PORT
         value: '5432'
       - key: DB_POSTGRESDB_SCHEMA
