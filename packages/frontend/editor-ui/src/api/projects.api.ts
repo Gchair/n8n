@@ -2,6 +2,7 @@ import type { IRestApiContext } from '@n8n/rest-api-client';
 import { makeRestApiRequest } from '@n8n/rest-api-client';
 import type { Project, ProjectListItem, ProjectsCount } from '@/types/projects.types';
 import type { CreateProjectDto, UpdateProjectDto } from '@n8n/api-types';
+import { safeApiRequest } from '@/utils/safeApi';
 
 export const getAllProjects = async (context: IRestApiContext): Promise<ProjectListItem[]> => {
 	return await makeRestApiRequest(context, 'GET', '/projects');
