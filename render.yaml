@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: n8n-gatmer
+    env: node
+    plan: starter
+    branch: main
+    buildCommand: 'npm install'
+    startCommand: 'n8n start'
+    envVars:
+      - key: DB_POSTGRESDB_DATABASE
+        value: postgres
+      - key: DB_POSTGRESDB_HOST
+        value: aws-1-ap-south-1.pooler.supabase.com
+      - key: DB_POSTGRESDB_PASSWORD
+        value: Knsulting@11
+      - key: DB_POSTGRESDB_PORT
+        value: '5432'
+      - key: DB_POSTGRESDB_SCHEMA
+        value: public
+      - key: DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED
+        value: 'false'
+      - key: DB_POSTGRESDB_USER
+        value: postgres.avsajfrkvtfjdyapwzrt
+      - key: DB_TYPE
+        value: postgresdb
+      - key: N8N_BASIC_AUTH_ACTIVE
+        value: 'true'
+      - key: N8N_BASIC_AUTH_PASSWORD
+        value: Knsulting@11
+      - key: N8N_BASIC_AUTH_USER
+        value: knsulting@gmail.com
+      - key: N8N_ENCRYPTION_KEY
+        value: 103679d7d405d6974e86f4e7c94a860f
+      - key: N8N_EXPRESS_TRUST_PROXY
+        value: 'true'
+      - key: N8N_HOST
+        value: 0.0.0.0
+      - key: N8N_PORT
+        value: '5678'
+      - key: N8N_TRUST_PROXY
+        value: 'true'
+      - key: SUPABASE_SERVICE_ROLE
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJzdXBhYmFzZSIsInJlZiI6ImF2c2FqZnJrdnRmamR5YXB3enJ0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjY1MDIzMSwiZXhwIjoyMDcyMjI2MjMxfQ.yHwOPjoWGUqMDIzh2y0yF7B9cuDVHA1PjDcna4PKRdw
+      - key: SUPABASE_URL
+        value: https://avsajfrkvtfjdyapwzrt.supabase.co
+      - key: VUE_APP_URL_BASE_API
+        value: https://n8n-gatmer.onrender.com
+      - key: WEBHOOK_URL
+        value: https://n8n-gatmer.onrender.com
