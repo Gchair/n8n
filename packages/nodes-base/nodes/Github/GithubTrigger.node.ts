@@ -104,13 +104,13 @@ export class GithubTrigger implements INodeType {
 						placeholder: 'e.g. https://github.com/n8n-io',
 						extractValue: {
 							type: 'regex',
-							regex: 'https:\\/\\/github.com\\/([-_0-9a-zA-Z]+)',
+							regex: 'https:\\/\\/(?:[^/]+)\\/([-_0-9a-zA-Z]+)',
 						},
 						validation: [
 							{
 								type: 'regex',
 								properties: {
-									regex: 'https:\\/\\/github.com\\/([-_0-9a-zA-Z]+)(?:.*)',
+									regex: 'https:\\/\\/([^/]+)\\/([-_0-9a-zA-Z]+)(?:.*)',
 									errorMessage: 'Not a valid Github URL',
 								},
 							},
@@ -158,13 +158,13 @@ export class GithubTrigger implements INodeType {
 						placeholder: 'e.g. https://github.com/n8n-io/n8n',
 						extractValue: {
 							type: 'regex',
-							regex: 'https:\\/\\/github.com\\/(?:[-_0-9a-zA-Z]+)\\/([-_.0-9a-zA-Z]+)',
+							regex: 'https:\\/\\/(?:[^/]+)\\/(?:[-_0-9a-zA-Z]+)\\/([-_.0-9a-zA-Z]+)',
 						},
 						validation: [
 							{
 								type: 'regex',
 								properties: {
-									regex: 'https:\\/\\/github.com\\/(?:[-_0-9a-zA-Z]+)\\/([-_.0-9a-zA-Z]+)(?:.*)',
+									regex: 'https:\\/\\/([^/]+)\\/(?:[-_0-9a-zA-Z]+)\\/([-_.0-9a-zA-Z]+)(?:.*)',
 									errorMessage: 'Not a valid Github Repository URL',
 								},
 							},
@@ -494,7 +494,7 @@ export class GithubTrigger implements INodeType {
 				if (webhookUrl.includes('//localhost')) {
 					throw new NodeOperationError(
 						this.getNode(),
-						'The Webhook can not work on "localhost". Please, either setup n8n on a custom domain or start with "--tunnel"!',
+						'The Webhook can not work on "localhost". Please setup n8n on a custom domain.',
 					);
 				}
 

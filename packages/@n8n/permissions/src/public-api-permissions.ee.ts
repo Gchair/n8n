@@ -34,8 +34,10 @@ export const OWNER_API_KEY_SCOPES: ApiKeyScope[] = [
 	'workflow:deactivate',
 	'execution:delete',
 	'execution:read',
+	'execution:retry',
 	'execution:list',
 	'credential:create',
+	'credential:update',
 	'credential:move',
 	'credential:delete',
 ];
@@ -59,11 +61,15 @@ export const MEMBER_API_KEY_SCOPES: ApiKeyScope[] = [
 	'workflow:deactivate',
 	'execution:delete',
 	'execution:read',
+	'execution:retry',
 	'execution:list',
 	'credential:create',
+	'credential:update',
 	'credential:move',
 	'credential:delete',
 ];
+
+export const CHAT_USER_API_KEY_SCOPES: ApiKeyScope[] = [];
 
 /**
  * This is a bit of a mess, because we are handing out scopes in API keys that are only
@@ -84,8 +90,10 @@ export const API_KEY_SCOPES_FOR_IMPLICIT_PERSONAL_PROJECT: ApiKeyScope[] = [
 	'workflow:deactivate',
 	'execution:delete',
 	'execution:read',
+	'execution:retry',
 	'execution:list',
 	'credential:create',
+	'credential:update',
 	'credential:move',
 	'credential:delete',
 ];
@@ -94,9 +102,14 @@ const MAP_ROLE_SCOPES: Record<GlobalRole, ApiKeyScope[]> = {
 	'global:owner': OWNER_API_KEY_SCOPES,
 	'global:admin': ADMIN_API_KEY_SCOPES,
 	'global:member': MEMBER_API_KEY_SCOPES,
+	'global:chatUser': CHAT_USER_API_KEY_SCOPES,
 };
 
 export const getApiKeyScopesForRole = (user: AuthPrincipal) => {
+	if (user.role.slug === 'global:chatUser') {
+		return [];
+	}
+
 	return [
 		...new Set(
 			user.role.scopes

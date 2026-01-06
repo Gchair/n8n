@@ -9,25 +9,30 @@ container to the main n8n container.
 [Task runners](https://docs.n8n.io/hosting/configuration/task-runners/) are used to execute user-provided code
 in the [Code Node](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.code/), isolated from the n8n instance.
 
+For official documentation, please see [here](https://docs.n8n.io/hosting/configuration/task-runners/).
+
+For a distroless variant of this image, see [here](./Dockerfile.distroless).
+
+For development purposes only, see below.
 
 ## Testing locally
 
-1. Make a production build of n8n
+### 1) Make a production build of n8n
 
 ```
 pnpm run build:n8n
 ```
 
-2. Build the task runners image
+### 2) Build the task runners image
 
 ```
-docker buildx build --no-cache \
+docker buildx build \
   -f docker/images/runners/Dockerfile \
   -t n8nio/runners \
   .
 ```
 
-3. Start n8n on your host machine with Task Broker enabled
+### 3) Start n8n on your host machine with Task Broker enabled
 
 ```
 N8N_RUNNERS_ENABLED=true \
@@ -37,8 +42,7 @@ N8N_LOG_LEVEL=debug \
 pnpm start
 ```
 
-
-4. Start the task runner container
+### 4) Start the task runner container
 
 ```
 docker run --rm -it \
@@ -48,3 +52,6 @@ docker run --rm -it \
 -p 5680:5680 \
 n8nio/runners
 ```
+
+If you need to add extra dependencies (custom image), follow [these instructions](https://docs.n8n.io/hosting/configuration/task-runners/#adding-extra-dependencies).
+

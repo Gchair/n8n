@@ -9,14 +9,31 @@ pnpm build:docker # from root first to test against local changes
 ## Quick Start
 ```bash
 pnpm test:all                 									# Run all tests (fresh containers, pnpm build:docker from root first to ensure local containers)
-pnpm test:local           											# Starts a local server and runs the UI tests
-N8N_BASE_URL=localhost:5068 pnpm test:local			# Runs the UI tests against the instance running
+pnpm test:local           											# Starts a local server and runs the E2E tests
+N8N_BASE_URL=localhost:5068 pnpm test:local			# Runs the E2E tests against the instance running
 ```
 
+## Separate Backend and Frontend URLs
+
+When developing with separate backend and frontend servers (e.g., backend on port 5680, frontend on port 8080), you can use the following environment variables:
+
+- **`N8N_BASE_URL`**: Backend server URL (also used as frontend URL if `N8N_EDITOR_URL` is not set)
+- **`N8N_EDITOR_URL`**: Frontend server URL (when set, overrides frontend URL while backend uses `N8N_BASE_URL`)
+
+**How it works:**
+- **Backend URL** (for API calls): Always uses `N8N_BASE_URL`
+- **Frontend URL** (for browser navigation): Uses `N8N_EDITOR_URL` if set, otherwise falls back to `N8N_BASE_URL`
+
+This allows you to:
+- Test against a backend on port 5680 while the frontend dev server runs on port 8080
+- Use different URLs for API calls vs browser navigation
+- Maintain backward compatibility with single-URL setups
+
 ## Test Commands
+
 ```bash
 # By Mode
-pnpm test:container:standard    # Sqlite
+pnpm test:container:sqlite      # SQLite (default)
 pnpm test:container:postgres    # PostgreSQL
 pnpm test:container:queue       # Queue mode
 pnpm test:container:multi-main  # HA setup
@@ -26,7 +43,7 @@ pnpm test:chaos									# Runs the chaos tests
 
 
 # Development
-pnpm test:all --grep "workflow"           # Pattern match, can run across all test types UI/cli-workflow/performance
+pnpm test:all --grep "workflow"           # Pattern match, can run across all test types E2E/cli-workflow/performance
 pnpm test:local --ui            # To enable UI debugging and test running mode
 ```
 
@@ -101,21 +118,63 @@ test.describe('Proxy tests @capability:proxy', () => {
 
 The ProxyServer service supports recording HTTP requests for test mocking and replay. All proxied requests are automatically recorded by the mock server as described in the [Mock Server documentation](https://www.mock-server.com/proxy/record_and_replay.html).
 
-```typescript
-// Record all requests
-await proxyServer.recordExpectations();
+#### Recording Expectations
 
-// Record requests with matching criteria
-await proxyServer.recordExpectations({
-  method: 'POST',
-  path: '/api/workflows',
-  queryStringParameters: {
-    'userId': ['123']
+```typescript
+// Record all requests (the request is simplified/cleansed to method/path/body/query)
+await proxyServer.recordExpectations('test-folder');
+
+// Record with filtering and options
+await proxyServer.recordExpectations('test-folder', {
+  host: 'googleapis.com',           // Filter by host (partial match)
+  dedupe: true,                     // Remove duplicate requests
+  raw: false                        // Save cleaned requests (default)
+});
+
+// Record raw requests with all headers and metadata
+await proxyServer.recordExpectations('test-folder', {
+  raw: true                         // Save complete original requests
+});
+
+// Record requests matching specific criteria
+await proxyServer.recordExpectations('test-folder', {
+  pathOrRequestDefinition: {
+    method: 'POST',
+    path: '/api/workflows'
   }
 });
 ```
 
-Recorded expectations are saved as JSON files in the `expectations/` directory with unique names based on the request details. When the ProxyServer fixture initializes, all saved expectations are automatically loaded and mocked for subsequent test runs.
+#### Loading and Using Recorded Expectations
+
+Recorded expectations are saved as JSON files in the `expectations/` directory. To use them in tests, you must explicitly load them:
+
+```typescript
+test('should use recorded expectations', async ({ proxyServer }) => {
+  // Load expectations from a specific folder
+  await proxyServer.loadExpectations('test-folder');
+
+  // Your test code here - requests will be mocked using loaded expectations
+});
+```
+
+#### Important: Cleanup Expectations
+
+**Remember to clean up expectations before or after test runs:**
+
+```typescript
+test.beforeEach(async ({ proxyServer }) => {
+  // Clear any existing expectations before test
+  await proxyServer.clearAllExpectations();
+});
+
+test.afterEach(async ({ proxyServer }) => {
+  // Or clear expectations after test
+  await proxyServer.clearAllExpectations();
+});
+```
+
+This prevents expectations from one test affecting others and ensures test isolation.
 
 ## Writing Tests
 For guidelines on writing new tests, see [CONTRIBUTING.md](./CONTRIBUTING.md).
